@@ -1,0 +1,40 @@
+sudo: required
+
+language: node_js
+
+node_js:
+  - '8'
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+    - develop
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+
+env:
+  global:
+    - DOCKER_IMAGE_NAME=orcid/orcid-angular
+    - COMMIT=${TRAVIS_COMMIT::8}
+
+before_install:
+  - docker --version
+
+before_script:
+  - npm install
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+script:
+  - npm run build
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $DOCKER_IMAGE_NAME:$COMMIT .
+  - docker tag $DOCKER_IMAGE_NAME:$COMMIT $DOCKER_IMAGE_NAME:$TAG
+  - docker push $DOCKER_IMAGE_NAME:$COMMIT
+  - docker push $DOCKER_IMAGE_NAME:$TAG
+  - if [[ -n "$TRAVIS_TAG" ]]; then
+    docker push $DOCKER_IMAGE_NAME:$TRAVIS_TAG ; fi
+
+after_success:
+  - echo "deployment here"
