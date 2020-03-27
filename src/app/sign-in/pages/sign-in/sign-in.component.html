@@ -1,1 +1,138 @@
-<p>sign-in works!</p>
+<main>
+  <mat-card class="sign-in-card">
+    <mat-card-content>
+      <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+      <div class="container">
+        <div class="row space-around" [formGroup]="authorizationForm">
+          <div class="form-container">
+            <p class="sign-in-title" i18n="@@ngOrcid.signin.title">Sign in</p>
+            <div [hidden]="submitted">
+              <mat-form-field appearance="outline" class="row">
+                <mat-label i18n="@@ngOrcid.signin.username"
+                  >Email or 16-digit ORCID iD</mat-label
+                >
+                <input matInput formControlName="username" />
+                <mat-hint>example@email.com or 0000-0012-3456-7890</mat-hint>
+
+                <mat-error
+                  i18n="@@ngOrcid.signin.invalidEmail"
+                  *ngIf="
+                    usernameFormControl.hasError('required') ||
+                    usernameFormControl.hasError('email') ||
+                    usernameFormControl.hasError('pattern')
+                  "
+                  >Use the format example@email.com or 0000-0001-2345-6789
+                </mat-error>
+
+                <mat-error
+                  *ngFor="
+                    let backendError of usernameFormControl.errors
+                      ? usernameFormControl.errors['backendErrors']
+                      : []
+                  "
+                >
+                  {{ backendError }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="row">
+                <mat-label i18n="@@ngOrcid.signin.password">Password</mat-label>
+                <input matInput formControlName="password" type="password" />
+
+                <mat-error
+                  i18n="@@ngOrcid.signin.invalidPassword"
+                  *ngIf="passwordFormControl.hasError('required')"
+                >
+                  Invalid password
+                </mat-error>
+
+                <mat-error
+                  *ngFor="
+                    let backendError of usernameFormControl.errors
+                      ? usernameFormControl.errors['backendErrors']
+                      : []
+                  "
+                  >{{ backendError }}</mat-error
+                >
+              </mat-form-field>
+
+              <button
+                mat-raised-button
+                (click)="onSubmit()"
+                color="primary"
+                class="row"
+                type="button"
+                [disabled]="loading"
+                i18n="@@ngOrcid.signin.button"
+              >
+                SIGN IN
+              </button>
+            </div>
+            <div *ngIf="submitted" role="alert">
+              <p>
+                <ng-container
+                  i18n="@@orcid.frontend.reset.password.email_success_1"
+                  >We have sent a message to
+                </ng-container>
+                <strong>{{ usernameFormControl.value }}</strong>
+                <ng-container
+                  i18n="@@orcid.frontend.reset.password.email_success_2"
+                  >from reset@notify.orcid.org.
+                </ng-container>
+              </p>
+              <p>
+                <ng-container
+                  i18n="@@orcid.frontend.reset.password.email_success_3"
+                  >If you do not receive a message within 10 minutes, please
+                  check your spam folder. If you still do not see a message,
+                  then
+                </ng-container>
+
+                <a
+                  i18n="@@orcid.frontend.reset.password.email_success_4"
+                  (click)="navigateTo('/help/contact-us')"
+                  >contact us</a
+                >.
+              </p>
+            </div>
+            <div>
+              <a
+                class="row mat-caption display-1 forgot"
+                i18n="@@ngOrcid.signin.forgotYourPassword"
+                id="forgotYourPassword"
+                (click)="navigateTo('/reset-password')"
+              >
+                Forgot your password or ORCID ID?
+              </a>
+              <div class="row dontHaveOrcid">
+                <div class="col l6 m6 s4">
+                  <p
+                    class="row mat-caption"
+                    i18n="@@ngOrcid.signin.dontHaveOrcid"
+                    id="dontHaveOrcid"
+                  >
+                    Don't have an ORCID iD yet?
+                  </p>
+                </div>
+                <div class="col l6 m6 s4">
+                  <a
+                    class="row mat-caption display-1"
+                    i18n="@@ngOrcid.signin.registerNow"
+                    (click)="navigateTo('/help/contact-us')"
+                    id="registerNow"
+                  >
+                    Register now
+                  </a>
+                </div>
+              </div>
+              <p class="or">or</p>
+              <mat-divider></mat-divider>
+            </div>
+            <br />
+            <app-social [hidden]="submitted"></app-social>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</main>

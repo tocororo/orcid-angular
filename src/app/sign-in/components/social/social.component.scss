@@ -1,0 +1,34 @@
+.google {
+  margin-top: 12px;
+  max-height: 36px;
+  background-color: #ffffff;
+}
+
+.institution {
+  max-height: 36px;
+  background-color: #0079ff;
+  color: #ffffff;
+}
+
+.facebook {
+  margin-top: 12px;
+  max-height: 36px;
+  background-color: #3b5998;
+  color: #ffffff;
+}
+
+mat-icon {
+  vertical-align: middle;
+  position: relative;
+  float: left;
+  font-size: 20px !important;
+}
+
+.mat-icon .mat-icon-inline {
+  font-size: 20px !important;
+}
+
+button {
+  width: 100%;
+  max-width: 460px;
+}

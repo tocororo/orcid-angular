@@ -1,4 +1,5 @@
 export const ApplicationRoutes = {
+  signin: 'signin',
   search: 'orcid-search/search',
   resetPassword: 'reset-password',
   home: '',
