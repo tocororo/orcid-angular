@@ -12,16 +12,25 @@ import { getOrcidNumber } from '../../constants'
   providedIn: 'root',
 })
 export class SignInService {
+  private headers: HttpHeaders;
+
   constructor(
     private _http: HttpClient,
     private _errorHandler: ErrorHandlerService
-  ) {}
-
-  signIn(data) {
-    const headers = new HttpHeaders().set(
+  ) {
+    this.headers = new HttpHeaders().set(
       'Content-Type',
       'application/x-www-form-urlencoded;charset=utf-8'
     )
+  }
+
+  signIn(data, type) {
+    let loginUrl = 'signin/auth.json'
+
+    if (type && type === 'institutional') {
+      loginUrl = 'shibboleth/signin/auth.json'
+    }
+
     let body = new HttpParams({ encoder: new CustomEncoder() })
       .set('userId', getOrcidNumber(data.username))
       .set('password', data.password)
@@ -33,10 +42,12 @@ export class SignInService {
     }
     body = body.set('oauthRequest', 'false')
     return this._http
-      .post<SignIn>(environment.API_WEB + `signin/auth.json`, body, {
-        headers,
-        withCredentials: true,
-      })
+      .post<SignIn>(environment.API_WEB + loginUrl,
+        body,
+        {
+          headers: this.headers,
+          withCredentials: true,
+        })
       .pipe(
         retry(3),
         catchError((error) => this._errorHandler.handleError(error))
@@ -44,16 +55,11 @@ export class SignInService {
   }
 
   reactivation(data) {
-    const headers = new HttpHeaders()
-    headers.set(
-      'Content-Type',
-      'application/x-www-form-urlencoded;charset=utf-8'
-    )
     let body = new HttpParams({ encoder: new CustomEncoder() })
     body = body.set('email', data.email)
     return this._http
       .post<Reactivation>(environment.API_WEB + `sendReactivation.json`, body, {
-        headers,
+        headers: this.headers,
         withCredentials: true,
       })
       .pipe(
