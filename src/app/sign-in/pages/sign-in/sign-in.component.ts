@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment'
 import { take, tap } from 'rxjs/operators'
 import { ActivatedRoute, Router } from '@angular/router'
 import { OauthParameters } from 'src/app/types'
+import { TypeSignIn } from '../../../types/sing-in.local'
 
 @Component({
   selector: 'app-sign-in',
@@ -21,6 +22,7 @@ export class SignInComponent implements OnInit {
   displayName: string
   realUserOrcid: string
   show2FA = false
+  signInType = TypeSignIn.personal
 
   constructor(
     private _userInfo: UserService,
@@ -60,7 +62,6 @@ export class SignInComponent implements OnInit {
   ngOnInit() {}
 
   show2FAEmitter($event) {
-    this.show2FA = true;
+    this.show2FA = true
   }
-
 }

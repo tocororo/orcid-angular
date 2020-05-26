@@ -12,7 +12,7 @@ import { getOrcidNumber } from '../../constants'
   providedIn: 'root',
 })
 export class SignInService {
-  private headers: HttpHeaders;
+  private headers: HttpHeaders
 
   constructor(
     private _http: HttpClient,
@@ -24,30 +24,28 @@ export class SignInService {
     )
   }
 
-  signIn(data, type) {
+  signIn(SingInLocal) {
     let loginUrl = 'signin/auth.json'
 
-    if (type && type === 'institutional') {
+    if (SingInLocal.type && SingInLocal.type === 'institutional') {
       loginUrl = 'shibboleth/signin/auth.json'
     }
 
     let body = new HttpParams({ encoder: new CustomEncoder() })
-      .set('userId', getOrcidNumber(data.username))
-      .set('password', data.password)
-    if (data.verificationCode) {
-      body = body.set('verificationCode', data.verificationCode)
+      .set('userId', getOrcidNumber(SingInLocal.data.username))
+      .set('password', SingInLocal.data.password)
+    if (SingInLocal.data.verificationCode) {
+      body = body.set('verificationCode', SingInLocal.data.verificationCode)
     }
-    if (data.recoveryCode) {
-      body = body.set('recoveryCode', data.recoveryCode)
+    if (SingInLocal.data.recoveryCode) {
+      body = body.set('recoveryCode', SingInLocal.data.recoveryCode)
     }
     body = body.set('oauthRequest', 'false')
     return this._http
-      .post<SignIn>(environment.API_WEB + loginUrl,
-        body,
-        {
-          headers: this.headers,
-          withCredentials: true,
-        })
+      .post<SignIn>(environment.API_WEB + loginUrl, body, {
+        headers: this.headers,
+        withCredentials: true,
+      })
       .pipe(
         retry(3),
         catchError((error) => this._errorHandler.handleError(error))
