@@ -7,6 +7,7 @@ import { SignIn } from '../../types/sign-in.endpoint'
 import { Reactivation } from '../../types/reactivation.endpoint'
 import { CustomEncoder } from '../custom-encoder/custom.encoder'
 import { getOrcidNumber } from '../../constants'
+import { SingInLocal, TypeSignIn } from '../../types/sing-in.local'
 
 @Injectable({
   providedIn: 'root',
@@ -24,21 +25,21 @@ export class SignInService {
     )
   }
 
-  signIn(SingInLocal) {
+  signIn(singInLocal: SingInLocal) {
     let loginUrl = 'signin/auth.json'
 
-    if (SingInLocal.type && SingInLocal.type === 'institutional') {
+    if (singInLocal.type && singInLocal.type === TypeSignIn.institutional) {
       loginUrl = 'shibboleth/signin/auth.json'
     }
 
     let body = new HttpParams({ encoder: new CustomEncoder() })
-      .set('userId', getOrcidNumber(SingInLocal.data.username))
-      .set('password', SingInLocal.data.password)
-    if (SingInLocal.data.verificationCode) {
-      body = body.set('verificationCode', SingInLocal.data.verificationCode)
+      .set('userId', getOrcidNumber(singInLocal.data.username))
+      .set('password', singInLocal.data.password)
+    if (singInLocal.data.verificationCode) {
+      body = body.set('verificationCode', singInLocal.data.verificationCode)
     }
-    if (SingInLocal.data.recoveryCode) {
-      body = body.set('recoveryCode', SingInLocal.data.recoveryCode)
+    if (singInLocal.data.recoveryCode) {
+      body = body.set('recoveryCode', singInLocal.data.recoveryCode)
     }
     body = body.set('oauthRequest', 'false')
     return this._http
