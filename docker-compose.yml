@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  proxy:
+    build: './proxy'
+    ports:
+      - 80:80
+    links:
+      - "web:orcid-angular"
+    depends_on:
+      - web
+
   web:
     build: .
     ports:
